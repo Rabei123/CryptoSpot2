@@ -1,0 +1,6 @@
+# Ignore secrets and runtime files
+*.log
+*.json
+google-credentials.json
+.env
+__pycache__/
