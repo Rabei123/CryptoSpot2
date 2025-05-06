@@ -21,14 +21,11 @@ take_profit_percentages = [0.05, 0.10, 0.20, 0.50]
 stop_loss_percent = 0.075
 SIGNAL_FILE = 'active_signals.json'
 ALERTS_FILE = 'last_alerts.json'
+SHEET_NAME = 'CryptoSignals'
 
 # === TELEGRAM CONFIG ===
-TELEGRAM_TOKEN = '8132154822:AAHJA0roirT1_IF3evlXvvM9JzROgk-vmAU'
-TELEGRAM_CHAT_ID = '-1002435447818'
-
-# === GOOGLE SHEET CONFIG ===
-SHEET_NAME = 'CryptoSignals'
-CREDS_FILE = 'google-credentials.json'
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
 # === LOGGING ===
 logging.basicConfig(filename='crypto_bot.log', level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -43,7 +40,9 @@ active_signals = {}
 # === SHEET ===
 def init_sheet():
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDS_FILE, scope)
+    google_creds_json = os.getenv('GOOGLE_CREDS_JSON')
+    creds_dict = json.loads(google_creds_json)
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     client = gspread.authorize(creds)
     return client.open(SHEET_NAME).sheet1
 
